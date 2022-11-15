@@ -1,0 +1,221 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width" />
+  <title>Сайт|Квартиры</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+     body {
+      font-size: 15px;
+      text-align: left;
+      padding: 20px;
+      max-width: 900px;
+    }
+table{
+  width: auto;
+} 
+
+  </style>
+</head>
+
+<body>
+  <form name="apartmentForm">
+    <input type="hidden" name="id" value="0" />
+    <div class="form-group">
+      <label for="adress">Адрес:</label>
+      <input class="form-control" name="adress" type="text" maxlength="40" />
+    </div>
+
+    <div class="form-group">
+      <label for="appearData">Дата добавления в список:</label>
+      <input class="form-control" name="appearData" type="date" />
+    </div>
+
+    <div class="form-group">
+      <label for="Cost">Цена($):</label>
+      <input class="form-control" name="Cost" type="number"/>
+    </div>
+
+    <div class="panel-body">
+      <button type="submit" class="btn btn-sm btn-primary">Сохранить</button>
+      <a id="reset" class="btn btn-sm btn-primary">Сбросить</a>
+    </div>
+  </form>
+
+  <table style="font-size: 20px; font-family: Arial;" class="table table-condensed table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Адрес</th>
+        <th>Дата добавления в список</th>
+        <th>Цена</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+
+  <script>
+    // Получение всех пользователей
+    async function GetApartments() {
+      // отправляет запрос и получаем ответ
+      const response = await fetch("/api/apartments", {
+        method: "GET",
+        headers: { "Accept": "application/json" }
+      });
+      // если запрос прошел нормально
+      if (response.ok === true) {
+        // получаем данные
+        const apartments = await response.json();
+        let rows = document.querySelector("tbody");
+        apartments.forEach(apartment => {
+          // добавляем полученные элементы в таблицу
+          rows.append(row(apartment));
+        });
+      }
+    }
+    // Получение одного пользователя
+    async function GetApartment(id) {
+      const response = await fetch("/api/apartments/" + id, {
+        method: "GET",
+        headers: { "Accept": "application/json" }
+      });
+      if (response.ok === true) {
+        const apartment = await response.json();
+        const form = document.forms["apartmentForm"];
+        form.elements["id"].value = apartment._id;
+        form.elements["adress"].value = apartment.adress;
+        form.elements["appearData"].value = apartment.appearData;
+        form.elements["Cost"].value = apartment.Cost;
+      }
+      else { form.elements["id"].value = 404 }
+    }
+    // Добавление пользователя
+    async function CreateApartment(apartmentAdress, apartmentAppearData, apartmentCost) {
+      const response = await fetch("/api/apartments", {
+        method: "POST",
+        headers: { "Accept": "application/json", "Content-Type": "application/json" },
+        body: JSON.stringify({
+          adress: apartmentAdress,
+          appearData: apartmentAppearData,
+          Cost: apartmentCost
+        })
+      });
+      if (response.ok === true) {
+        const apartment = await response.json();
+        reset();
+        document.querySelector("tbody").append(row(apartment));
+      }
+    }
+    // Изменение пользователя
+    async function EditApartment(apartmentId, apartmentAdress, apartmentAppearData, apartmentCost) {
+      const response = await fetch("/api/apartments", {
+        method: "PUT",
+        headers: { "Accept": "application/json", "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: apartmentId,// +-
+          adress: apartmentAdress,
+          appearData: apartmentAppearData,
+          Cost: apartmentCost
+        })
+      });
+      if (response.ok === true) {
+        const apartment = await response.json();
+        reset();
+        document.querySelector("tr[data-rowid='" + apartment._id + "']").replaceWith(row(apartment));
+      }
+    }
+    // Удаление пользователя
+    
+    async function DeleteApartment(id) {
+      const response = await fetch("/api/apartments/" + id, {
+        method: "DELETE",
+        headers: { "Accept": "application/json" }
+      });
+      if (response.ok === true) {
+        const apartment = await response.json();
+        document.querySelector("tr[data-rowid='" + apartment._id + "']").remove();
+      }
+    }
+
+    // сброс формы
+    function reset() {
+      const form = document.forms["apartmentForm"];
+      form.reset();
+      form.elements["id"].value = 0;
+    }
+    // создание строки для таблицы
+    function row(apartment) {
+
+      const tr = document.createElement("tr");
+      tr.setAttribute("data-rowid", apartment._id);
+
+      const idTd = document.createElement("td");
+      idTd.append(apartment._id);
+      tr.append(idTd);
+
+      const adressTd = document.createElement("td");
+      adressTd.append(apartment.adress);
+      tr.append(adressTd);
+
+      const appearDataTd = document.createElement("td");
+      appearDataTd.append(apartment.appearData);
+      tr.append(appearDataTd);
+
+      const CostTd = document.createElement("td");
+      CostTd.append(apartment.Cost);
+      tr.append(CostTd);
+
+      const linksTd = document.createElement("td");
+
+      const editLink = document.createElement("a");
+      editLink.setAttribute("data-id", apartment._id);
+      editLink.setAttribute("style", "cursor:pointer;padding:15px;");
+      editLink.append("Изменить");
+      editLink.addEventListener("click", e => {
+        e.preventDefault();
+        GetApartment(apartment._id);
+      });
+      linksTd.append(editLink);
+
+      const removeLink = document.createElement("a");
+      removeLink.setAttribute("data-id", apartment._id);
+      removeLink.setAttribute("style", "cursor:pointer;padding:15px;");
+      removeLink.append("Удалить");
+      removeLink.addEventListener("click", e => {
+        e.preventDefault();
+        DeleteApartment(apartment._id);
+      });
+
+      linksTd.append(removeLink);
+      tr.appendChild(linksTd);
+
+      return tr;
+    }
+    // сброс значений формы
+    document.getElementById("reset").click(function (e) {
+      e.preventDefault();
+      reset();
+    })
+    // отправка формы
+    document.forms["apartmentForm"].addEventListener("submit", e => {
+      e.preventDefault();
+      const form = document.forms["apartmentForm"];
+      const id = form.elements["id"].value;
+      const adress = form.elements["adress"].value;
+      const appearData = form.elements["appearData"].value;
+      const Cost = form.elements["Cost"].value;
+
+      if (id == 0)
+        CreateApartment(adress, appearData, Cost);
+      else
+        EditApartment(id, adress, appearData, Cost);
+    });
+    // загрузка пользователей
+    GetApartments();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,150 @@
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+
+	<style>
+		.preloader{
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			z-index: 9999;
+			background-color: #fefefe;
+		}
+	</style>
+	<link rel="stylesheet" href="css/style.css">
+	<title>Hello, world!</title>
+</head>
+<body>
+
+	<!-- <div class="preloader d-flex justify-content-center align-items-center">
+		<div class="spinner-border text-danger" style="width: 10rem; height: 10rem;" role="status">
+			<span class="sr-only">Загрузка...</span>
+		</div>
+	</div> -->
+
+	<button class="scrollToTop"><i class="fas fa-angle-up"></i></button>
+	
+	<header class="main-header">
+		<nav class="navbar navbar-expand-lg">
+			<a class="navbar-brand" href="#">
+				Агенство недвижимости
+			</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<i class="fas fa-bars"></i>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item admin-user"><a class="nav-link" href="index.html">Home</a></li>
+					<li class="nav-item admin-user"><a class="nav-link" href="apartments.html">Квартиры</a></li>
+					<li class="nav-item admin-user"><a class="nav-link" href="houses.html">Дома</a></li>
+					<li class="nav-item client-user"><a class="nav-link" href="clients.html">Клиенты</a></li>
+				</ul>
+				<button type="button" class="btn btn-pink rounded-pill client-call"><a href="./clients.html">Оставить заявку</a></button>
+				<span class="user-logo"></span>
+			</div>
+		</nav>
+
+		<div class="main-header-text">
+			<h3 style="color: #252525;">Приемлемые цены и быстрое время оформления договора</h3>
+			<p style="color: #252525;">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Suscipit doloribus non nam, velit nemo enim!</p>
+			<div class="main-header-buttons">
+				<button type="button" class="btn btn-pink rounded-pill button-auth">Войти</button>
+				<button type="button" class="btn btn-violet rounded-pill button-out">Выйти</button>
+			</div>
+		</div>
+		<!-- /.main-header-text -->
+	</header>
+
+	<section class="section-watch section-tabs">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-6 mb-5">
+					<h3>Недвижимость</h3>
+
+					<ul class="nav nav-pills" id="myTab" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active rounded-pill" id="webdesign-tab" data-toggle="tab" href="#webdesign" role="tab" aria-controls="webdesign" aria-selected="true">Webdesign</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link rounded-pill" id="mobileapp-tab" data-toggle="tab" href="#mobileapp" role="tab" aria-controls="mobileapp" aria-selected="false">Mobile app</a>
+						</li>
+					</ul>
+					<div class="tab-content" id="myTabContent">
+						<div class="tab-pane fade show active" id="webdesign" role="tabpanel" aria-labelledby="webdesign-tab">
+							<p>Квартиры, дома и удобная система выбора. Аренда на любой срок при быстром заключении договора</p>
+						</div>
+						<div class="tab-pane fade" id="mobileapp" role="tabpanel" aria-labelledby="mobileapp-tab">
+							<p>Поможем продать или подготовить имущество для аренды</p>
+						</div>
+					</div>
+
+				</div>
+				<!-- /.col-md-6 -->
+
+				<div class="col-lg-6 text-center">
+					<img src="img/83.jpg" alt="">
+				</div>
+				<!-- /.col-md-6 -->
+			</div>
+		</div>
+	</section>
+
+
+	
+	<!-- /.footer -->
+
+	<div class="copyright">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<ul class="nav">
+						<li class="nav-item">
+							<span class="nav-link">&copy; 2022</span>
+						</li>
+						<li class="nav-item"><a href="#" class="nav-link">Privacy</a></li>
+						<li class="nav-item"><a href="#" class="nav-link">Terms of Use</a></li>
+						<li class="nav-item"><a href="#" class="nav-link">Site Map</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /.copyright -->
+<div class="modal-auth">
+	<div class="modal-dialog modal-dialog-auth">
+		<button class="close-auth">&times;</button>
+		<form id="logInForm">
+			<fieldset class="modal-body">
+				<legend class="modal-title">Авторизация</legend>
+				<label class="label-auth">
+					<span>Логин</span>
+					<input name="login" id="login" type="text">
+				</label>
+				<label class="label-auth">
+					<span>Пароль</span>
+					<input name="password" id="password" type="text">
+				</label>
+			</fieldset>
+			<!-- /.modal-body -->
+			<div class="modal-footer">
+				<div class="footer-buttons">
+					<input class="button button-primary button-login" type="submit"></input>
+				</div>
+			</div>
+		</form>
+		<!-- /.modal-footer -->
+	</div>
+</div>
+
+	<script src="js/jquery-3.3.1.min.js"></script>
+	<script src="bootstrap/js/bootstrap.min.js"></script>
+	<script src="js/popper.min.js"></script>
+	<script src="js/main.js"></script>
+	<script src="js/main1.js"></script>
+</body>
+</html>

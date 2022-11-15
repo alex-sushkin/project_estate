@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>Дома</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<style>
+     body {
+      font-size: 15px;
+      text-align: left;
+            padding: 20px;
+      max-width: 900px;
+    }
+table{
+  width: auto;
+} 
+</style>
+<body>
+  <form name="houseForm">
+    <input type="hidden" name="id" value="0" />
+    <div class="form-group">
+      <label for="adress">Адрес:</label>
+      <input class="form-control" name="adress" type="text" maxlength="40"/>
+    </div>
+    <div class="form-group">
+      <label for="time">Время для сдачи:</label>
+      <input class="form-control" name="time" type="date" />
+    </div>
+    <div class="form-group">
+      <label for="Cost">Цена:</label>
+      <input class="form-control" name="Cost" type="number"/>
+    </div>
+    <div class="panel-body">
+      <button type="submit" class="btn btn-sm btn-primary">Сохранить</button>
+      <a id="reset" class="btn btn-sm btn-primary">Сбросить</a>
+    </div>
+  </form>
+  <table class="table table-condensed table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Адрес</th>
+        <th>Время для сдачи</th>
+        <th>Цена</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+
+
+  
+     <script>
+    
+  // Получение всех пользователей
+
+  async function Gethouses() {
+
+    // отправляет запрос и получаем ответ
+
+    const response = await fetch("/api/houses", {
+
+      method: "GET",
+
+      headers: { "Accept": "application/json" }
+
+    });
+
+    if (response.ok === true) {
+
+      // получаем данные
+
+      const houses = await response.json();
+
+      let rows = document.querySelector("tbody");
+
+      houses.forEach(house => {
+
+        rows.append(row(house));
+
+      });
+    }
+  }
+
+  // Получение одного пользователя
+
+  async function Gethouse(id) {
+
+    const response = await fetch("/api/houses/" + id, {
+
+      method: "GET",
+
+      headers: { "Accept": "application/json" }
+
+    });
+
+    if (response.ok === true) {
+
+      const house = await response.json();
+
+      const form = document.forms["houseForm"];
+
+      form.elements["id"].value = house._id;
+
+      form.elements["adress"].value = house.adress;
+
+      form.elements["time"].value = house.time;
+
+      form.elements["Cost"].value = house.Cost;
+
+    }
+
+    else { form.elements["id"].value = 404 }
+  }
+
+  // Добавление пользователя
+
+  async function Createhouse(houseAdress, houseTime, houseCost) {
+
+    const response = await fetch("/api/houses", {
+
+      method: "POST",
+
+      headers: { "Accept": "application/json", "Content-Type": "application/json" },
+
+      body: JSON.stringify({
+
+        adress: houseAdress,
+
+        time: houseTime,
+
+        Cost: houseCost
+
+      })
+
+    });
+
+    if (response.ok === true) {
+
+      const house = await response.json();
+
+      reset();
+
+      document.querySelector("tbody").append(row(house));
+
+    }
+  }
+
+  // Изменение пользователя
+
+  async function Edithouse(houseId, houseAdress, houseTime, houseCost) {
+
+    const response = await fetch("/api/houses", {
+
+      method: "PUT",
+
+      headers: { "Accept": "application/json", "Content-Type": "application/json" },
+
+      body: JSON.stringify({
+
+        id: houseId,
+
+        adress: houseAdress,
+
+        time: houseTime,
+
+        Cost: houseCost
+
+      })
+
+    });
+
+    if (response.ok === true) {
+
+      const house = await response.json();
+
+      reset();
+
+      document.querySelector("tr[data-rowid='" + house._id + "']").replaceWith(row(house));
+
+    }
+  }
+
+  // Удаление пользователя
+
+  async function Deletehouse(id) {
+
+    const response = await fetch("/api/houses/" + id, {
+
+      method: "DELETE",
+
+      headers: { "Accept": "application/json" }
+
+    });
+
+    if (response.ok === true) {
+
+      const house = await response.json();
+
+      document.querySelector("tr[data-rowid='" + house._id + "']").remove();
+
+    }
+  }
+
+  // сброс формы
+
+  function reset() {
+
+    const form = document.forms["houseForm"];
+
+    form.reset();
+
+    form.elements["id"].value = 0;
+
+  }
+
+  // создание строки для таблицы
+
+  function row(house) {
+
+    const tr = document.createElement("tr");
+
+    tr.setAttribute("data-rowid", house._id);
+
+    const idTd = document.createElement("td");
+
+    tr.append(idTd.append(house._id));
+
+    const adressTd = document.createElement("td");
+
+    adressTd.append(house.adress);
+
+    tr.append(adressTd);
+
+    const timeTd = document.createElement("td");
+
+    timeTd.append(house.time);
+
+    tr.append(timeTd);
+
+    const CostTd = document.createElement("td");
+
+    CostTd.append(house.Cost);
+
+    tr.append(CostTd);
+
+    const linksTd = document.createElement("td");
+
+    const editLink = document.createElement("a");
+
+    editLink.setAttribute("data-id", house._id);
+
+    editLink.setAttribute("style", "cursor:pointer;padding:15px;");
+
+    editLink.append("Изменить");
+
+    editLink.addEventListener("click", e => {
+
+      e.preventDefault();
+
+      Gethouse(house._id);
+
+    });
+
+    linksTd.append(editLink);
+
+    const removeLink = document.createElement("a");
+
+    removeLink.setAttribute("data-id", house._id);
+
+    removeLink.setAttribute("style", "cursor:pointer;padding:15px;");
+
+    removeLink.append("Удалить");
+
+    removeLink.addEventListener("click", e => {
+
+      e.preventDefault();
+
+      Deletehouse(house._id);
+
+    });
+
+    linksTd.append(removeLink);
+
+    tr.appendChild(linksTd);
+
+    return tr;
+
+  }
+
+  // сброс значений формы
+
+  document.forms["houseForm"].addEventListener("reset", e => {
+
+    //e.preventDefault();
+
+    reset();
+
+  });
+
+  // отправка формы
+
+  document.forms["houseForm"].addEventListener("submit", e => {
+
+    e.preventDefault();
+
+    const form = document.forms["houseForm"];
+
+    const id = form.elements["id"].value;
+
+    const adress = form.elements["adress"].value;
+
+    const time = form.elements["time"].value;
+
+    const Cost = form.elements["Cost"].value;
+
+    if (id == 0)
+
+      Createhouse(adress, time, Cost);
+
+    else
+
+      Edithouse(id, adress, time, Cost);
+
+  });
+
+  // загрузка пользователей
+
+  Gethouses();
+  </script>
+</body>
+
+</html>
